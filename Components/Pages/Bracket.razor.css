@@ -1,0 +1,85 @@
+﻿.bracket-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 60px; /* space between left/final/right */
+    margin-top: 40px;
+    margin-left: -50px;
+}
+
+.bracket {
+    display: flex;
+    flex-direction: row;
+    gap: 40px; /* space between rounds */
+}
+
+    /* Left side → rounds flow left to right */
+    .bracket.left {
+        flex-direction: row;
+    }
+
+    /* Right side ← rounds flow right to left */
+    .bracket.right {
+        flex-direction: row-reverse;
+    }
+
+.round {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 40px;
+}
+
+.match {
+    position: relative;
+    padding: 6px; /* reduce padding inside match */
+    border: 1px solid #444; /* thinner border */
+    border-radius: 6px; /* slightly smaller rounding */
+    background: #f8f8f8;
+    min-width: 120px; /* narrower box */
+    font-size: 0.9rem; /* smaller text */
+    text-align: center;
+}
+
+.team {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+    .team:last-child {
+        border-bottom: none;
+    }
+
+/* Connectors */
+.bracket.left .round .match::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -30px;
+    width: 30px;
+    height: 2px;
+    background: #333;
+}
+
+.bracket.right .round .match::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -30px;
+    width: 30px;
+    height: 2px;
+    background: #333;
+}
+
+.final-match {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-input {
+    width: 30px;
+    padding: 3px;
+    text-align: center;
+    margin: 0 5px;
+}

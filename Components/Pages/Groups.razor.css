@@ -1,0 +1,53 @@
+﻿.group-container {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    max-width: 650px;
+}
+
+    .group-container h3 {
+        margin-top: 0;
+        color: #333;
+    }
+
+    .group-container ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .group-container li {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .group-container li:last-child {
+            border-bottom: none;
+        }
+
+.match-info {
+    flex: 1;
+}
+
+.score-input {
+    width: 40px;
+    padding: 3px;
+    text-align: center;
+    margin: 0 5px;
+}
+
+.save-btn {
+    padding: 4px 8px;
+    border: none;
+    background: #007BFF;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    .save-btn:hover {
+        background: #0056b3;
+    }

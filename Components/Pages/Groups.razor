@@ -1,0 +1,137 @@
+﻿@page "/Groups"
+@rendermode InteractiveServer
+@inject IJSRuntime JS
+@using Microsoft.EntityFrameworkCore;
+@using PoolApp.Domain.Entities
+@using PoolApp.Infrastructure.Data
+@using PoolApp.Application.Interfaces
+
+@inject IGamesRepo GamesRepo
+
+
+<div class="group-container">
+    <button class="save-btn" @onclick="SaveGuessess">Save Scores</button>
+    <div>
+        <h2>World Cup Groups</h2>
+        <p>Enter your score predictions for each match below:</p>
+    </div>
+    <h3>Group A Matches</h3>
+    <ul>
+        @foreach (var match in gamesGroup[1])
+        {
+            <li>
+                <div class="match-info">
+                    <strong>@match.MatchDateTime.ToString()</strong> —
+                    @match.HomeTeam.Name
+                    <input type="number" min="0" class="score-input"
+                    @bind="match.Usersguess.HomeScore" />
+                    vs
+                    @match.AwayTeam.Name
+                    <input type="number" min="0" class="score-input"
+                    @bind="match.Usersguess.AwayScore" />
+                    <strong>Results</strong>
+                    @((match.HomeScore?.ToString()) ?? "-") vs @((match.AwayScore?.ToString()) ?? "-")
+                </div>
+
+            </li>
+        }
+    </ul>
+
+    <h3>Group B Matches</h3>
+    <ul>
+        @foreach (var match in gamesGroup[2])
+        {
+            <li>
+                <div class="match-info">
+                    <strong>@match.MatchDateTime.ToString()</strong> —
+                    @match.HomeTeam.Name
+                    <input type="number" min="0" class="score-input"
+                    @bind="match.Usersguess.HomeScore" />
+                    vs
+                    @match.AwayTeam.Name
+                    <input type="number" min="0" class="score-input"
+                    @bind="match.Usersguess.AwayScore" />
+                    <strong>Results</strong>
+                    @((match.HomeScore?.ToString()) ?? "-") vs @((match.AwayScore?.ToString()) ?? "-")
+                </div>
+
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    private int userID = 1;
+    private List<Games>[] gamesGroup = new List<Games>[5];
+    private List<UsersGuess> usersGuess = new List<UsersGuess>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        usersGuess = await GamesRepo.GetAllUsersGuess()
+                          .Where(ug => ug.UserID == userID)
+                          .ToListAsync();
+
+
+        for (int i = 1; i < gamesGroup.Length; i++)
+        {
+            gamesGroup[i] = await GamesRepo.GetAllGames()
+                      .Include(g => g.HomeTeam)
+                      .Include(g => g.AwayTeam)
+                      .Where(g => g.GroupID == i)
+                      .ToListAsync();
+
+
+            // Link UsersGuess to corresponding Games
+            foreach (var match in gamesGroup[i])
+            {
+                foreach (var guess in usersGuess)
+                {
+                    if (match.id == guess.MatchID)
+                    {
+                        match.Usersguess = guess;
+                        break; // Exit the inner loop once a match is found
+                    }
+                }
+                ;
+
+                if (match.Usersguess == null)
+                {
+                    match.Usersguess = new UsersGuess
+                        {
+                            MatchID = match.id,
+                            UserID = userID
+                        };
+                }
+            }
+        }
+
+
+    }
+
+
+
+
+
+    private async Task SaveGuessess()
+    {
+        for (var i = 1; i < gamesGroup.Length; i++)
+        {
+            // Link UsersGuess to corresponding Games
+            foreach (var guess in gamesGroup[i])
+            {
+
+                await GamesRepo.UpdateUsersGuessAsync(guess.Usersguess, userID);
+            }
+        }
+
+        await Task.CompletedTask;
+
+
+    }
+
+
+}
+
+
+
